@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: finance_bot
+    depends_on:
+      - postgres
+    ports:
+      - "8084:8084"
+    networks:
+      - finance_network
+
+  postgres:
+    image: postgres:alpine
+    container_name: finance_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: finance_db
+    ports:
+      - "5432:5432"
+    networks:
+      - finance_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  finance_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
