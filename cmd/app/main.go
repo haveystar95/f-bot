@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
+	"net/http"
 	"strconv"
 )
 
@@ -21,13 +22,15 @@ func main() {
 	cfg := config.LoadConfig()
 	logger.InitLogger()
 	db.InitDB(cfg.Database.Host, strconv.Itoa(cfg.Database.Port), cfg.Database.User, cfg.Database.Password, cfg.Database.DBName)
-
 	r := gin.Default()
 
 	userService := services.NewUserService(db.DB)
 	userHandler := handlers.NewUserHandler(userService)
 
 	r.GET("/users/:id", userHandler.GetUser)
+	r.GET("", func(context *gin.Context) {
+		context.Status(http.StatusOK)
+	})
 
 	err = r.Run(":8084")
 	if err != nil {
