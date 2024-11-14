@@ -11,9 +11,11 @@ COPY . .
 WORKDIR /app/cmd/app
 
 COPY config.yaml /app/cmd/app/
+COPY .env /app/cmd/app/
+COPY db /app/cmd/app/db
 
-RUN go build -o main .
-
+RUN go build -o main main.go
+RUN go run migration.go
 EXPOSE 8084
 
 CMD ["./main"]

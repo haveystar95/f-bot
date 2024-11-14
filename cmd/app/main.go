@@ -20,16 +20,23 @@ func main() {
 	}
 
 	cfg := config.LoadConfig()
+
 	logger.InitLogger()
 	db.InitDB(cfg.Database.Host, strconv.Itoa(cfg.Database.Port), cfg.Database.User, cfg.Database.Password, cfg.Database.DBName)
 	r := gin.Default()
-
+	r.LoadHTMLGlob("templates/*")
 	userService := services.NewUserService(db.DB)
 	userHandler := handlers.NewUserHandler(userService)
 
-	r.GET("/users/:id", userHandler.GetUser)
+	api := r.Group("/api")
+	{
+		api.GET("/users/:id", userHandler.GetUser)
+		api.GET("", func(context *gin.Context) {
+			context.Status(http.StatusOK)
+		})
+	}
 	r.GET("", func(context *gin.Context) {
-		context.Status(http.StatusOK)
+		context.HTML(http.StatusOK, "index.html", gin.H{})
 	})
 
 	err = r.Run(":8084")
