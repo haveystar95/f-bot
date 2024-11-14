@@ -13,6 +13,7 @@ WORKDIR /app/cmd/app
 COPY config.yaml /app/cmd/app/
 COPY .env /app/cmd/app/
 COPY db /app/cmd/app/db
+COPY templates /app/cmd/app/templates
 
 RUN go build -o main main.go
 RUN go run migration.go
