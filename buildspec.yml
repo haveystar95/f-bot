@@ -1,28 +1,40 @@
 version: 0.2
 
+env:
+  variables:
+    IMAGE_NAME: f-bot
+    AWS_REGION: ${AWS_REGION
+    AWS_ACCOUNT_ID: ${AWS_ACCOUNT_ID}
+
 phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+      - apk update && apk add --no-cache docker
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-      - echo Building the Docker image...
-      - docker build -t f-bot .
-
+      - echo "Logging in to Amazon ECR..."
+      - $(aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com)
+      - echo "Checking if ECR repository exists..."
+      - aws ecr describe-repositories --repository-name $IMAGE_NAME || aws ecr create-repository --repository-name $IMAGE_NAME
   build:
     commands:
-      - echo Tagging Docker image...
-      - docker tag f-bot:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/f-bot:latest
-      - echo Pushing Docker image to Amazon ECR...
-      - docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/f-bot:latest
-
+      - echo "Building the Docker image..."
+      - docker build -t $IMAGE_NAME .
+      - echo "Tagging the image..."
+      - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
   post_build:
     commands:
-      - echo Running Docker container...
-      - docker stop f-bot || true
-      - docker rm f-bot || true
-      - docker run -d -p 80:8084 --name f-bot -v /var/param/.env:/app/.env ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/f-bot:latest
-
+      - echo "Pushing the Docker image to Amazon ECR..."
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
+      - echo "Creating deployment artifact..."
+      - mkdir -p /tmp/deployment
+      - echo "version: 0.0" > /tmp/deployment/appspec.yml
+      - echo "os: linux" >> /tmp/deployment/appspec.yml
+      - echo "files:" >> /tmp/deployment/appspec.yml
+      - echo "  - source: /" >> /tmp/deployment/appspec.yml
+      - echo "    destination: /dummy-path" >> /tmp/deployment/appspec.yml
+      - cp Dockerfile /tmp/deployment/
 artifacts:
   files:
-    - '**/*'
-  discard-paths: yes
+    - /tmp/deployment/**
