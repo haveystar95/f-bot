@@ -5,15 +5,10 @@ files:
     destination: /app
 hooks:
   BeforeInstall:
-    - timeout: 300
+    - location: scripts/stop_container.sh
+      timeout: 300
       runas: root
-      script: |
-        echo "Stopping any running Docker containers..."
-        docker stop f-bot || true
-        docker rm f-bot || true
   AfterInstall:
-    - timeout: 300
+    - location: scripts/start_container.sh
+      timeout: 300
       runas: root
-      script: |
-        echo "Starting Docker container..."
-        docker run -d -p 80:8084 --name f-bot -v /path-to-env-on-server/.env:/app/.env ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/f-bot:latest
