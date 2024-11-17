@@ -36,7 +36,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	// Call the GetUserByID method on the user service
 	user, err := h.UserService.GetUserByID(uint(userID))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error getting user1"})
 		return
 	}
 
