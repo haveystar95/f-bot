@@ -29,7 +29,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	// This will return an error if the ID is not a valid integer
 	userID, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID sdsdsds"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
@@ -41,11 +41,10 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	}
 
 	// Generate a random string
-	randomString := "random string"
+	randomString := "random string new one"
 	userResponse := UserResponse{
 		UserInfo:     *user,
 		RandomString: randomString,
 	}
-	// Return the user as JSON
 	c.JSON(http.StatusOK, userResponse)
 }
