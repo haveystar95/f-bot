@@ -9,8 +9,7 @@ env:
 phases:
   install:
     commands:
-      - echo "Installing dependencies..."
-      - apk update && apk add --no-cache docker
+      - echo "Skipping Docker installation as it is already available on the instance."
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
