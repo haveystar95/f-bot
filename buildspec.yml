@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     IMAGE_NAME: f-bot
-    AWS_REGION: ${AWS_REGION
+    AWS_REGION: ${AWS_REGION}
     AWS_ACCOUNT_ID: ${AWS_ACCOUNT_ID}
 
 phases:
