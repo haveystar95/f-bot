@@ -12,3 +12,6 @@ hooks:
     - location: scripts/start_container.sh
       timeout: 300
       runas: root
+      environment_variables:
+        AWS_ACCOUNT_ID: "438465148767"
+        AWS_REGION: "us-east-1"
