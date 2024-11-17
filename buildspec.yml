@@ -27,14 +27,7 @@ phases:
     commands:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
-      - echo "Creating deployment artifact..."
-      - mkdir -p /tmp/deployment
-      - echo "version: 0.0" > /tmp/deployment/appspec.yml
-      - echo "os: linux" >> /tmp/deployment/appspec.yml
-      - echo "files:" >> /tmp/deployment/appspec.yml
-      - echo "  - source: /" >> /tmp/deployment/appspec.yml
-      - echo "    destination: /dummy-path" >> /tmp/deployment/appspec.yml
-      - cp Dockerfile /tmp/deployment/
 artifacts:
   files:
-    - /tmp/deployment/**
+    - appspec.yml
+    - Dockerfile # Include other relevant files if necessary
