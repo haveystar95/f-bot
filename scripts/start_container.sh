@@ -1,5 +1,9 @@
 #!/bin/bash
 echo "Starting Docker container..."
+
+AWS_ACCOUNT_ID="438465148767"
+AWS_REGION="us-east-1"
+
 echo "AWS_ACCOUNT_ID is: $AWS_ACCOUNT_ID"
 echo "AWS_REGION is: $AWS_REGION"
 echo "Docker Version:"
