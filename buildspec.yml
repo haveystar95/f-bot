@@ -20,7 +20,7 @@ phases:
       - echo Running Docker container...
       - docker stop f-bot || true
       - docker rm f-bot || true
-      - docker run -d -p 80:8084 --name f-bot -v var/param/.env:/app/.env ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/f-bot:latest
+      - docker run -d -p 80:8084 --name f-bot -v /var/param/.env:/app/.env ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/f-bot:latest
 
 artifacts:
   files:
