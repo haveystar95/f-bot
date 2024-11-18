@@ -8,6 +8,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	go.uber.org/zap v1.21.0
+	gopkg.in/telebot.v3 v3.3.8
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.12
 )

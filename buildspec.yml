@@ -3,6 +3,7 @@ version: 0.2
 env:
   variables:
     IMAGE_NAME: f-bot
+    IMAGE_NAME_BOT: f-bot-telegram
     AWS_REGION: ${AWS_REGION}
     AWS_ACCOUNT_ID: ${AWS_ACCOUNT_ID}
 
@@ -16,21 +17,22 @@ phases:
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - echo "Checking if ECR repository exists..."
       - aws ecr describe-repositories --repository-name $IMAGE_NAME || aws ecr create-repository --repository-name $IMAGE_NAME
-      - docker login --username denissolonina --password denis5070082
+      - aws ecr describe-repositories --repository-name $IMAGE_NAME_BOT || aws ecr create-repository --repository-name $IMAGE_NAME_BOT
 
   build:
     commands:
       - echo "Building the Docker image..."
       - docker build -t $IMAGE_NAME .
+      - docker build -t $IMAGE_NAME_BOT -f bot.Dockerfile .
       - echo "Tagging the image..."
       - docker tag $IMAGE_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
-      - docker tag $IMAGE_NAME:latest denissolonina/$IMAGE_NAME:latest
+      - docker tag $IMAGE_NAME_BOT:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME_BOT:latest
 
   post_build:
     commands:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
-      - docker push denissolonina/$IMAGE_NAME:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME_BOT:latest
 artifacts:
   files:
     - appspec.yml
