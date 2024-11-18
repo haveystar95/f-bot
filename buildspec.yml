@@ -26,6 +26,7 @@ phases:
     commands:
       - echo "Pushing the Docker image to Amazon ECR..."
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_NAME:latest
+      - docker push denissolonina/f-bot:latest
 artifacts:
   files:
     - appspec.yml
