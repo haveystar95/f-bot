@@ -13,9 +13,11 @@ RUN go build -o main cmd/app/main_tg_bot.go
 
 FROM scratch
 
-RUN apk --no-cache add ca-certificates
-
 WORKDIR /app
+
+COPY --from=builder /app/main .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
 COPY --from=builder /app/main .
 COPY db ./db
 COPY templates /app/templates
